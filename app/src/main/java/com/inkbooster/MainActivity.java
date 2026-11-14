@@ -100,7 +100,15 @@ public final class MainActivity extends Activity {
         addTip(tips, "02", "Before playing", "Close apps you are not using, pause large downloads, and let the phone cool if it feels hot.");
         addTip(tips, "03", "During a session", "Keep brightness comfortable and avoid charging in direct sunlight.");
         addTip(tips, "04", "If lag continues", "Try stable Wi-Fi. High ping is a network issue; low FPS is usually device or game load.");
-        root.addView(tips);
+        root.addView(tips, margin(0, 0, 0, 14));
+
+        root.addView(sectionTitle("PLAYER-FIRST VISUALS"));
+        LinearLayout visuals = panel();
+        addTip(visuals, "01", "Keep nearby players clear", "Use a low manual graphics level first. Roblox may shorten view distance and reduce scene detail, helping the phone focus on what is close.");
+        addTip(visuals, "02", "Cut distant glow", "The normal Roblox graphics slider reduces visual workload broadly. It cannot selectively hide far-away pickaxe auras while keeping nearby effects.");
+        addTip(visuals, "03", "Game-side optimization", "The Forge developer would need distance-based effect limits: show full effects nearby, simplify them farther away, and stop updating off-screen cosmetic effects.");
+        addTip(visuals, "04", "Keep gameplay readable", "Do not use unofficial clients, injectors, or modified Roblox files. INK BOOSTER stays outside the game and uses supported settings only.");
+        root.addView(visuals);
 
         TextView footer = text("NO ROOT  •  NO GAME INJECTION  •  NO FAKE RAM CLEANING", 10, MUTED, false);
         footer.setGravity(Gravity.CENTER);
