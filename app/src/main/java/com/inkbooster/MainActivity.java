@@ -94,7 +94,7 @@ public final class MainActivity extends Activity {
         statusValue = text("Ready to check your phone", 18, Color.WHITE, true);
         statusValue.setPadding(0, dp(8), 0, dp(5));
         hero.addView(statusValue);
-        hero.addView(text("Monitor your device and open Roblox. This app does not modify Roblox or promise extra FPS.", 13, MUTED, false));
+        hero.addView(text("Monitor your device, launch Roblox, or enable a small floating HUD. It does not modify Roblox or promise extra FPS.", 13, MUTED, false));
         root.addView(hero, margin(0, 0, 0, 14));
 
         root.addView(sectionTitle("DEVICE STATUS"));
@@ -115,6 +115,9 @@ public final class MainActivity extends Activity {
         Button refresh = actionButton("REFRESH DEVICE STATUS", false);
         refresh.setOnClickListener(v -> refreshDeviceStatus());
         root.addView(refresh, margin(0, 0, 0, 9));
+        Button hud = actionButton("ENABLE FLOATING SESSION HUD", true);
+        hud.setOnClickListener(v -> enableSessionHud());
+        root.addView(hud, margin(0, 0, 0, 9));
         Button battery = actionButton("OPEN BATTERY SETTINGS", false);
         battery.setOnClickListener(v -> {
             try { startActivity(new Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS)); }
@@ -204,6 +207,23 @@ public final class MainActivity extends Activity {
         if (caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) return "Mobile data";
         if (caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) return "Ethernet";
         return "Connected";
+    }
+
+    private void enableSessionHud() {
+        if (!Settings.canDrawOverlays(this)) {
+            Toast.makeText(this, "Allow display over other apps, then return and tap this button again.", Toast.LENGTH_LONG).show();
+            Intent permission = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    android.net.Uri.parse("package:" + getPackageName()));
+            startActivity(permission);
+            return;
+        }
+        try {
+            Intent service = new Intent(this, SessionHudService.class);
+            startForegroundService(service);
+            Toast.makeText(this, "Floating session monitor enabled. Drag it to move; tap × to close.", Toast.LENGTH_LONG).show();
+        } catch (RuntimeException error) {
+            Toast.makeText(this, "Could not start the floating monitor. Check Android permissions and try again.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void launchRoblox() {
