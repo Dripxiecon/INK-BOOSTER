@@ -35,7 +35,6 @@ public final class MainActivity extends Activity {
     private TextView memoryValue, thermalValue, batteryValue, networkValue, statusValue, updatedValue;
     private final Handler monitorHandler = new Handler(Looper.getMainLooper());
     private boolean monitorRunning;
-    private long previousAvailableMemory = -1L;
     private final Runnable monitorTask = new Runnable() {
         @Override public void run() {
             if (!monitorRunning) return;
@@ -172,7 +171,6 @@ public final class MainActivity extends Activity {
         if (updatedValue != null) {
             updatedValue.setText("Auto-refresh: 5 sec  •  Last check: " + java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date()));
         }
-        previousAvailableMemory = freeBytes;
     }
 
     private String readThermalStatus() {
