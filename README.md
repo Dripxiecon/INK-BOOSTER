@@ -5,7 +5,8 @@ A native Android companion for preparing and monitoring a phone before playing R
 ## Current prototype
 
 - Native Android dashboard written in Java, with no third-party runtime dependencies.
-- Available-memory reading through Android ActivityManager.
+- Available-memory reading through Android ActivityManager, refreshed every five seconds while the dashboard is open.
+- Device-health warnings when Android reports low-memory conditions or severe thermal status.
 - Thermal status where the device exposes Android's thermal API.
 - Battery temperature and active network transport.
 - One-tap launch of the installed Roblox app.
@@ -14,7 +15,7 @@ A native Android companion for preparing and monitoring a phone before playing R
 
 ## Important limitations
 
-INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, selectively hide distant player effects, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance.
+INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, selectively hide distant player effects, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance. Automatic monitoring runs only while the dashboard is visible; it pauses when the app is backgrounded, so it is not yet an in-game overlay or continuous background monitor.
 
 Roblox's built-in manual graphics quality can reduce the overall rendering workload and may shorten view distance, but it is a broad setting—not a per-effect distance control. Selective player-first rendering (full nearby avatars/effects, simplified distant effects) must be implemented by the experience developer.
 
