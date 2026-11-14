@@ -11,6 +11,8 @@ import android.net.NetworkCapabilities;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.graphics.Color;
@@ -30,7 +32,17 @@ public final class MainActivity extends Activity {
     private static final int PANEL = Color.rgb(21, 27, 34);
     private static final int INK = Color.rgb(190, 255, 75);
     private static final int MUTED = Color.rgb(155, 166, 178);
-    private TextView memoryValue, thermalValue, batteryValue, networkValue, statusValue;
+    private TextView memoryValue, thermalValue, batteryValue, networkValue, statusValue, updatedValue;
+    private final Handler monitorHandler = new Handler(Looper.getMainLooper());
+    private boolean monitorRunning;
+    private long previousAvailableMemory = -1L;
+    private final Runnable monitorTask = new Runnable() {
+        @Override public void run() {
+            if (!monitorRunning) return;
+            refreshDeviceStatus();
+            monitorHandler.postDelayed(this, 5000L);
+        }
+    };
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -42,7 +54,21 @@ public final class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
-        if (memoryValue != null) refreshDeviceStatus();
+        monitorRunning = true;
+        monitorHandler.removeCallbacks(monitorTask);
+        monitorHandler.post(monitorTask);
+    }
+
+    @Override protected void onPause() {
+        monitorRunning = false;
+        monitorHandler.removeCallbacks(monitorTask);
+        super.onPause();
+    }
+
+    @Override protected void onDestroy() {
+        monitorRunning = false;
+        monitorHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
     private void buildDashboard() {
@@ -78,6 +104,9 @@ public final class MainActivity extends Activity {
         thermalValue = addStat(stats, "THERMAL STATUS", "Checking…");
         batteryValue = addStat(stats, "BATTERY TEMPERATURE", "Checking…");
         networkValue = addStat(stats, "NETWORK", "Checking…");
+        updatedValue = text("Updates every 5 seconds while this screen is open", 11, MUTED, false);
+        updatedValue.setPadding(dp(2), dp(7), 0, 0);
+        stats.addView(updatedValue);
         root.addView(stats, margin(0, 0, 0, 14));
 
         root.addView(sectionTitle("QUICK ACTIONS"));
@@ -122,13 +151,28 @@ public final class MainActivity extends Activity {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
         manager.getMemoryInfo(info);
-        long freeMb = info.availMem / (1024L * 1024L);
+        long freeBytes = info.availMem;
+        long freeMb = freeBytes / (1024L * 1024L);
         long totalMb = info.totalMem / (1024L * 1024L);
         memoryValue.setText(String.format(Locale.getDefault(), "%,d MB free / %,d MB total", freeMb, totalMb));
-        thermalValue.setText(readThermalStatus());
+        String thermal = readThermalStatus();
+        thermalValue.setText(thermal);
         batteryValue.setText(readBatteryTemperature());
         networkValue.setText(readNetwork());
-        statusValue.setText(info.lowMemory ? "Memory is running low" : "Your phone is ready to check");
+        if (info.lowMemory) {
+            statusValue.setText("Memory pressure detected — close unused apps");
+            statusValue.setTextColor(Color.rgb(255, 170, 90));
+        } else if (thermal.contains("Severe") || thermal.contains("Critical") || thermal.contains("Emergency")) {
+            statusValue.setText("Phone is too hot — pause and let it cool");
+            statusValue.setTextColor(Color.rgb(255, 170, 90));
+        } else {
+            statusValue.setText("Device check looks OK — monitoring");
+            statusValue.setTextColor(Color.WHITE);
+        }
+        if (updatedValue != null) {
+            updatedValue.setText("Auto-refresh: 5 sec  •  Last check: " + java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date()));
+        }
+        previousAvailableMemory = freeBytes;
     }
 
     private String readThermalStatus() {
