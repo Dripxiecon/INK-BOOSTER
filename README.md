@@ -10,10 +10,13 @@ A native Android companion for preparing and monitoring a phone before playing R
 - Battery temperature and active network transport.
 - One-tap launch of the installed Roblox app.
 - Practical graphics and session guidance for a lower-end device.
+- Player-first graphics guidance explaining what Roblox's global quality slider can reduce and what requires game-developer support.
 
 ## Important limitations
 
-INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance.
+INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, selectively hide distant player effects, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance.
+
+Roblox's built-in manual graphics quality can reduce the overall rendering workload and may shorten view distance, but it is a broad setting—not a per-effect distance control. Selective player-first rendering (full nearby avatars/effects, simplified distant effects) must be implemented by the experience developer.
 
 ## Build
 
@@ -36,4 +39,5 @@ The app is designed to run on newer Android releases, including Android 17, subj
 1. Verify the first build on a physical Galaxy A05.
 2. Improve the dashboard with session history and clearer performance signals.
 3. Add a guided game-start checklist and user-controlled settings shortcuts.
-4. Measure real gameplay results before making performance claims.
+4. Explore a repeatable before/after session log for FPS, heat, memory, and ping where the platform exposes those readings.
+5. Measure real gameplay results before making performance claims.
