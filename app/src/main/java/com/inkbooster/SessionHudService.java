@@ -33,6 +33,7 @@ public final class SessionHudService extends Service {
     private static final int NOTIFICATION_ID = 41;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private WindowManager windowManager;
+    private WindowManager.LayoutParams params;
     private View hud;
     private TextView stats;
     private boolean attached;
@@ -128,6 +129,15 @@ public final class SessionHudService extends Service {
         close.setPadding(0, 0, 0, 0);
         close.setOnClickListener(v -> stopSelf());
         row.addView(close);
+        params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                PixelFormat.TRANSLUCENT);
+        params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        params.y = dp(90);
         row.setOnTouchListener(new View.OnTouchListener() {
             private int startX, startY;
             private float downX, downY;
@@ -152,20 +162,6 @@ public final class SessionHudService extends Service {
         windowManager.addView(hud, params);
         attached = true;
         refreshHud();
-    }
-
-    private final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            Build.VERSION.SDK_INT >= 26
-                    ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    : WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT);
-    {
-        params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        params.y = dp(90);
     }
 
     private void refreshHud() {
