@@ -10,12 +10,13 @@ A native Android companion for preparing and monitoring a phone before playing R
 - Thermal status where the device exposes Android's thermal API.
 - Battery temperature and active network transport.
 - One-tap launch of the installed Roblox app.
+- Optional draggable floating session HUD showing available memory, thermal status, and battery temperature while another app (such as Roblox) is open.
 - Practical graphics and session guidance for a lower-end device.
 - Player-first graphics guidance explaining what Roblox's global quality slider can reduce and what requires game-developer support.
 
 ## Important limitations
 
-INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, selectively hide distant player effects, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance. Automatic monitoring runs only while the dashboard is visible; it pauses when the app is backgrounded, so it is not yet an in-game overlay or continuous background monitor.
+INK BOOSTER does not inject into Roblox, modify game files, change Roblox's internal graphics settings, selectively hide distant player effects, kill background processes, clear memory caches, or guarantee higher FPS or lower ping. Android does not grant ordinary apps those powers. This app reports device information and provides safe actions and guidance. The dashboard's automatic refresh runs only while the dashboard is visible. The optional floating HUD is a separate, user-started foreground service; it requires Android's Display over other apps permission and shows device readings only. It is not injected into Roblox and does not read Roblox FPS, ping, player positions, or effects.
 
 Roblox's built-in manual graphics quality can reduce the overall rendering workload and may shorten view distance, but it is a broad setting—not a per-effect distance control. Selective player-first rendering (full nearby avatars/effects, simplified distant effects) must be implemented by the experience developer.
 
@@ -40,5 +41,5 @@ The app is designed to run on newer Android releases, including Android 17, subj
 1. Verify the first build on a physical Galaxy A05.
 2. Improve the dashboard with session history and clearer performance signals.
 3. Add a guided game-start checklist and user-controlled settings shortcuts.
-4. Explore a repeatable before/after session log for FPS, heat, memory, and ping where the platform exposes those readings.
+4. Explore a repeatable before/after session log for device temperature and memory; FPS and ping require reliable supported data sources.
 5. Measure real gameplay results before making performance claims.
